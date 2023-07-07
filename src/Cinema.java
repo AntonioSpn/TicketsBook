@@ -1,5 +1,4 @@
-public class Cinema {
-    
+public class Cinema{
     private String city;
     private int room; //numero sale del cinema
     private Owner owner;
@@ -37,6 +36,4 @@ public class Cinema {
 
 
 
-
-    
 }
