@@ -4,7 +4,7 @@ public class Film {
     private String title;
     private String director; // regista
     private Date date; // data di uscita del film al cinema
-
+    //controllare tipo data
 
     public Film(String title, String director, Date date) {
         this.title = title;
@@ -39,4 +39,3 @@ public class Film {
 
 
 }
-
