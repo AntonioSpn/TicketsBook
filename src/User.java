@@ -30,12 +30,12 @@ public abstract class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return this.password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public boolean signIn (String username, String password){
+        if(this.password.equals(password) && this.username.equals(username)) return true;
+        else return false;
+    }
 }
