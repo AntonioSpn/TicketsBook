@@ -1,30 +1,52 @@
-// import java.io.IOException;
-// import java.io.UnsupportedEncodingException;
-// import java.security.NoSuchAlgorithmException;
-// import java.time.LocalDate;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
 import java.util.Scanner;
+import java.util.Map.Entry;
 
 public class Client {
-    private ArrayList <User> userList; //creazione arraylist
+    private UserHash userList; //creazione arraylist
     private final Scanner user_scanner = new Scanner(System.in);
+    private String address;
+    private int port;
+    private ObjectOutputStream pw;
+    private ObjectInputStream serverStream;
+    private Socket socket;
+ 
 
-    public Client (){
-        this.userList = new ArrayList<User>();
+    public Client (String address, int port) throws ClassNotFoundException, IOException{
+        this.address = address;
+        this.port = port;
     }    
     
     public static void main(String[] args) {
-        Client user= new Client();
-        user.Menu();
+        Client user = null;
+
+        try {
+            
+            user = new Client("127.0.0.1", 8888);
+            user.connect();
+            user.askList();
+            user.Menu(); 
+        } catch (Exception e) {            
+            e.printStackTrace();
+            System.exit(-1);
+        }               
     }
 
-    private void Menu() {
+    private void Menu() throws IOException {
         while(true){
-            System.out.println("Welcome on TicketsBook platform!\nInsert 1 to Sign in or 2 to Sign up\nInsert choice: ");
+            System.out.println("Welcome on TicketsBook platform!\nInsert 1 to Sign in or 2 to Sign up or 0 to leave the platform\nInsert choice: ");
             int choice = user_scanner.nextInt();
             user_scanner.nextLine();
-            while(choice!=1 && choice!=2){
-                System.out.println("Choose 1 or 2!\n1: Sign In\n2: Sign Up \nInsert choice: ");
+            while(choice!=1 && choice!=2 && choice!=0){
+                System.out.println("Choose 1 or 2 or 0!\n1: Sign In\n2: Sign Up\n0: Leave \nInsert choice: ");
                 choice = user_scanner.nextInt();
                 user_scanner.nextLine();
             }
@@ -39,11 +61,11 @@ public class Client {
                         }
                         switch (tmp.getClass().getName()){
                             case "Owner":
-                                OwnerClient((Owner) tmp);
-                                return;
+                                ownerClient((Owner) tmp);
+                                break;
                             case "Customer":
-                                CustomerClient((Customer) tmp);
-                                return;
+                                customerClient((Customer) tmp);
+                                break;
                         }
 
                     // }
@@ -54,7 +76,12 @@ public class Client {
                 case 2:
                     SignUp();
                     break;
+                case 0:
+                    
+                    quit(1);   
             }
+
+            userList.saveOnFile();
         }
     }
 
@@ -90,48 +117,133 @@ public class Client {
                 tmp = new Customer(name,surname,user,email,pass);
                 break;
         }
-            System.out.println("Welcome " + tmp.getClass().getName() + " " + tmp.getName() + " " + tmp.getSurname());
-            //inserimento in arraylist
-            userList.add(tmp);
+            try {
+                pw.writeObject("SIGNUP");
+                pw.writeObject((tmp.getClass().getName()));
+                pw.writeObject(tmp);
+                
+                String answer = (String) serverStream.readObject();
+                if(!answer.equals("SUCCESS")) quit(-1);
+                System.out.println("Welcome " + tmp.getClass().getName() + " " + tmp.getName() + " " + tmp.getSurname());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+            
             
     }
 
-    private void CustomerClient(Customer tmp) {
-        System.out.println("Hello Customer " + tmp.getName() + "\n");
-        System.out.println("Choose your option: \n1 View film \n2Buy ticket for a film \n3 View all your tickets");
-        int choice = user_scanner.nextInt();
-        Ticket t;
-        switch (choice){
-            case 1:
-            //tmp.viewFilm; //aggiungere metodo
-            case 2:
-            tmp.buyTicket(t); // t non è inizializzato, sistemare
-            case 3:
-            tmp.viewTickets();
+    private void customerClient(Customer tmp) {
+        while(true){
+            System.out.println("Hello Customer " + tmp.getName() + "\n");
+            System.out.println("Choose your option: \n1: Search film and buy ticket\n2: View all your tickets \n0: Leave");
+            int choice = user_scanner.nextInt();
+            user_scanner.nextLine();
+            //Ticket t = new Ticket(1, 9.00, "CIN1000001");
+            //ArrayList <Ticket> tickets = new ArrayList<>();
+            switch (choice){            
+                case 1:
+                    //tmp.buyTicket(t); // t non è inizializzato, sistemare
+                    System.out.println ("Search for title or cinema");
+                    System.out.println ("1 Search by film \n2 Search by cinema");
+                    int ch = user_scanner.nextInt();
+                    user_scanner.nextLine();
+                    System.out.println("Insert title or name of the cinema");
+                    String search = user_scanner.nextLine();
+
+                    Ticket t = searchTicket(search, ch);
+
+                    if(t==null){ //non trova il cinema o il film
+                        System.out.println("Impossible buy ticket");
+                        break;
+                    }
+
+                    tmp.buyTicket(t); // t non è inizializzato, sistemare
+
+                    break;
+                case 2:
+                    tmp.getTickets().forEach((ticket) -> System.out.println(ticket));
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Press 1, 2 or 0");
+            }
         }
+     }
 
-    }
-
-    private void OwnerClient(Owner tmp) {
-        System.out.println("Hello Mr." + tmp.getName() + "\n");
-        System.out.println("Choose your option:\n1 Add a film to your cinema \n2Remove a film from your cinema \n3 Set ticket cost for a film \n4 Set number of tickets available for a film \n5 Add a cinema");
-        int choice = user_scanner.nextInt();
-        switch (choice){
-            case 1: 
-            //tmp.addFilm(); aggiungere metodo
-            case 2: 
-            //tmp.removeFilm(); aggiungere metodo
-            case 3: 
-            //tmp.setcost(); aggiungere metodo
-            case 4:
-            //tmp.setnumberticketsavailable(); aggiungere metodo
-            case 5:
-               System.out.println("Insert city\n");
-               String citycinema = user_scanner.nextLine();
-               System.out.println("\nInsert number of rooms\n");
-               int numberrooms= user_scanner.nextInt();
-               Cinema cinema = new Cinema (citycinema, numberrooms, tmp);
-               tmp.setCinema(cinema);
+    private void ownerClient(Owner tmp) {
+        while (true){
+            System.out.println("Hello Mr." + tmp.getName() + "\n");
+            System.out.println("Choose your option:");
+            if(!tmp.hasCinema()){
+                System.out.println("1: Add your cinema");
+                
+            } else System.out.println("1: Add a film to the cinema \n2 Remove a film from your cinema \n3 Set ticket cost for a film \n4 Set number of tickets available for a film \n5 View all films \n6 View today");
+            System.out.println("0: Leave");
+            int choice = user_scanner.nextInt();
+            user_scanner.nextLine();
+            switch (choice){
+                case 1: 
+                    if (!tmp.hasCinema()) {
+                        this.addCinema(tmp);
+                        System.out.println("Your cinema is "+tmp.getCinema().getName()+", Placed in: "+tmp.getCinema().getCity());
+                    } else {
+                        this.addFilm(tmp.getCinema());
+                        tmp.getCinema().getListFilm().forEach((film) -> System.out.println(film));    
+                    } 
+                    break;
+                case 2: 
+                    if(tmp.hasCinema()){
+                        this.removeFilm(tmp.getCinema());
+                        tmp.getCinema().getListFilm().forEach((film) -> System.out.println(film));
+                    }
+                    break;
+                case 3:
+                    if(tmp.hasCinema()){
+                        this.changeCost(tmp.getCinema()); 
+                    }   
+                    break;
+                
+                case 4:
+                    if(tmp.hasCinema()){
+                        this.setNumberTicketsMax(tmp.getCinema());
+                    }
+                                        
+                    break;
+                case 5:
+                    if(tmp.hasCinema()){
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        tmp.getCinema().getListFilm().forEach((film) -> 
+                            System.out.println(
+                                film.getTitle() + 
+                                " ( " + formatter.format(film.getStartDate()) + " - " + formatter.format(film.getEndDate()) + " ) " +
+                                "room " + film.getRoomView() + ", " +
+                                "tickets sold " + film.getNumberTicketSold()
+                            )
+                        );
+                    }
+                    break;
+                case 6:
+                    if(tmp.hasCinema()){
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        tmp.getCinema().viewToday(new Date()).forEach((film) -> 
+                            System.out.println(
+                                film.getTitle() + 
+                                " ( " + formatter.format(film.getStartDate()) + " - " + formatter.format(film.getEndDate()) + " ) " +
+                                "room " + film.getRoomView() + ", " +
+                                "tickets sold " + film.getNumberTicketSold()
+                            )
+                        );
+                    }
+                    break;        
+                case 0:
+                    return;
+                default: 
+                    System.out.println("Press 1, 2, 3, 4, 5, 6 or 0");
+            }
         }
     }
 
@@ -140,44 +252,320 @@ public class Client {
         String username=user_scanner.nextLine();
         System.out.println("Insert password: ");
         String password = user_scanner.nextLine();
-        
-        for(int i=0; i<userList.size(); i++){
-            User tmp = userList.get(i);
-            if(tmp.signIn(username, password)){
-                // se username e password inseriti sono uguali ad una coppia username,password 
-                // trovate allo stesso indice, l'utente ha accesso
-               System.out.println("You signed in correctly");  
-               /*String type = tmp.getClass().getName().toUpperCase();
-               String s1= new String("OWNER");
-               String s2= new String ("CUSTOMER");
-               boolean equalstringowner = type.equals(s1);
-               if(equalstringowner==true){
-                
-                //menu owner
-                System.out.println("Welcome owner. Choose your option: \n1 Add a film to a cinema \n2 other options");
-               }
-               boolean equalstringcustomer = type.equals(s2);
-               if(equalstringcustomer==true){
-                 //menu customer
-                 System.out.println("Welcome customer. Choose your option: \n1 Buy a ticket \n2 View your ticketlist");
-                 int choice = user_scanner.nextInt();
-                 Ticket t;
-                 switch (choice){
-                    case 1:
-                        tmp.buyTicket(t); // errore sul metodo, tmp è user, il metodo è solo per ticket
-                    case 2:
-                        tmp.viewTickets(); // stesso errore
-                        
-                 }
-                 
-               }*/
 
-               return tmp;        
+        try {
+            pw.writeObject("SIGNIN");
+            pw.writeObject(username);
+            pw.writeObject(password);
+            String answer = (String) serverStream.readObject();
+            if(answer.equals("SIGNIN OK")){
+                return (User) serverStream.readObject();
             }
+        } catch (IOException e) {
+            
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-
+        
         return null;
     };
 
+    private void addFilm(Cinema cinema){
+        System.out.println("Insert title of the film ");
+        String title = user_scanner.nextLine();
+        System.out.println("Insert director ");
+        String director = user_scanner.nextLine();
+        System.out.println("Insert genere of the film "); // tradurre genere
+        String gen = user_scanner.nextLine();
+        System.out.println("Insert full cost of the ticket ");
+        double costAdult= user_scanner.nextDouble();
+        user_scanner.nextLine();
+        System.out.println("Insert reduced cost of the ticket ");
+        double costKid= user_scanner.nextDouble();
+        user_scanner.nextLine();   
+        System.out.println("Which room is the film played in?");
+        int roomView = -1;
+        while ( roomView < 1 || roomView > cinema.getRoom().length){
+            for (int i=0; i<cinema.getRoom().length; i++){
+                System.out.println("Room number "+(i+1) +", seats: " + cinema.getRoom()[i]);
+                
+            }
+            roomView = user_scanner.nextInt();
+            user_scanner.nextLine();
+        }
+        int numberTicketSold = 0; //numero di biglietti venduti
+        int numberTicketMax = cinema.getRoom()[roomView-1];
+        Date startDate = null;
+        Date endDate = null;
+        while(startDate == null || endDate == null){
+            try {
+                System.out.println("Insert start date");
+                System.out.println("Insert day: DD");
+                String day = user_scanner.nextLine();
+                System.out.println("Insert month: MM");
+                String month = user_scanner.nextLine();
+                System.out.println("Insert year: YYYY");
+                String year = user_scanner.nextLine();
+                String date_string = year+month+day;
+            //Instantiating the SimpleDateFormat class
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");      
+            //Parsing the given String to Date object
+                startDate = formatter.parse(date_string); 
+                System.out.println("Date value: "+startDate);
 
-}
+
+                System.out.println("Insert end date");
+                System.out.println("Insert day: DD");
+                day = user_scanner.nextLine();
+                System.out.println("Insert month: MM");
+                month = user_scanner.nextLine();
+                System.out.println("Insert year: YYYY");
+                year = user_scanner.nextLine();
+                date_string = year+month+day;
+            //Instantiating the SimpleDateFormat class
+                //SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");      
+            //Parsing the given String to Date object
+                endDate = formatter.parse(date_string);
+                System.out.println("Date value: "+endDate); 
+            } catch (ParseException e) {
+                System.out.println("Error date");
+            }      
+        }
+        System.out.println ("Film time: ");
+        String timeBeginning = user_scanner.nextLine();
+        cinema.addFilm(new Film(title, director, startDate, endDate, gen, costAdult, costKid, roomView, numberTicketSold, numberTicketMax, timeBeginning));
+    };
+
+    private void addCinema(Owner tmp){
+        System.out.println("Insert name of the cinema ");
+        String namecinema = user_scanner.nextLine();
+        System.out.println("Insert city");
+        String citycinema = user_scanner.nextLine();
+        System.out.println("Insert number of rooms");
+        int numberrooms= user_scanner.nextInt();
+        user_scanner.nextLine();
+        int [] arraynumber = new int[numberrooms];
+        for (int i=0; i<numberrooms; i++){
+            System.out.println("How many seats has room number "+(i+1) +"?");
+            int num= user_scanner.nextInt();
+            user_scanner.nextLine();
+            arraynumber[i]=num;
+        }
+        Cinema cinema = new Cinema (namecinema, citycinema, arraynumber);
+        tmp.setCinema(cinema);
+    }
+
+    
+    private int selectFilm(Cinema cinema){
+        int film = -1;
+        while ( film < 1 || film > cinema.getListFilm().size()){
+            for(int i = 0; i< cinema.getListFilm().size(); i++){
+                System.out.println((i+1) + ": "+cinema.getListFilm().get(i).getTitle());
+            }
+            System.out.println ("Choice index:");
+            film = user_scanner.nextInt();
+            user_scanner.nextLine();
+        };
+        return film - 1;
+
+    }
+    
+    private void removeFilm (Cinema cinema){
+        System.out.println("Choose the index at which remove the film");
+        cinema.removeFilm(this.selectFilm(cinema));
+    }
+
+
+
+    private void changeCost (Cinema cinema){
+        System.out.println("Choose the index at which edit the cost of the film");
+        int film = this.selectFilm(cinema);
+        while (true){
+            System.out.println("Do you want to edit full price or reduce price?");
+            System.out.println("1: Full price \n2 Reduced price");
+            int choice = user_scanner.nextInt();
+            user_scanner.nextLine();
+            switch(choice){
+                case 1: 
+                    System.out.println("New price: ");
+                    double newprice = user_scanner.nextDouble();
+                    user_scanner.nextLine();
+                    cinema.getListFilm().get(film).setCostAdult(newprice);
+                    return;
+                case 2:
+                    System.out.println("New price: ");
+                    double newpricekid = user_scanner.nextDouble();
+                    user_scanner.nextLine();
+                    cinema.getListFilm().get(film).setCostKid(newpricekid);
+                    return; 
+                default:
+            }
+
+        }
+        
+
+    }
+
+    private void setNumberTicketsMax(Cinema cinema){
+        System.out.println("Choose the index at which edit the number of tickets available for a film");
+        int film = this.selectFilm(cinema);
+        int max = cinema.getRoom()[cinema.getListFilm().get(film).getRoomView()-1];
+        int min = cinema.getListFilm().get(film).getNumberTicketSold();
+       
+        int newseat = -1;
+        while (newseat < min || newseat > max){
+            System.out.println("Setta il nuovo numero di posti");
+            newseat = user_scanner.nextInt();
+            user_scanner.nextLine();
+        }
+        cinema.getListFilm().get(film).setNumberTicketMax(newseat);
+
+
+    }
+
+    private Ticket searchTicket (String searchString, int type){
+        ArrayList <Cinema> cinemaList = new ArrayList<>();
+        for (Entry<String, User> entry : userList.entrySet()){ // per ogni entry presente in userList trasformato in un array di entry
+            if(entry.getValue().getClass().getName().equals("Owner")){ //il valore è User, mi prendo la classe e il nome della classe, se la classe è owner aggiungo
+                cinemaList.add(((Owner) entry.getValue()).getCinema()); //trasformo il valore in un owner e mi prendo il cinema, in quanto User non ha cinema ma owner si
+            }
+        };
+
+        ArrayList <SearchCinemaFilm> tmp = new ArrayList<>();
+
+        switch(type){
+            case 1: // ricerca per titolo del film    
+                for (Cinema cinema: cinemaList){
+                    for (Film f: cinema.getListFilm()){
+                        if(f.getTitle().toUpperCase().equals(searchString.toUpperCase()) && f.ticketAvailable()){
+                            tmp.add(new SearchCinemaFilm(cinema, f));
+                        }
+                    }
+                };  
+                break;             
+            case 2: // ricerca per nome del cinema
+                for (Cinema cinema: cinemaList){
+                    if(cinema.getName().toUpperCase().equals(searchString.toUpperCase())){
+                        for (Film f: cinema.getListFilm()){                    
+                            if(f.ticketAvailable()) tmp.add(new SearchCinemaFilm(cinema, f));
+                        }
+                    }
+                };
+                break;   
+            default:
+                break;    
+        }
+        if (tmp.size() == 0) return null;
+
+        int choice = -1;
+        while ( choice < 1 || choice > tmp.size()){
+            for(int i = 0; i< tmp.size(); i++){                             
+                System.out.println((i+1) + ": "+tmp.get(i));
+            }
+            System.out.println("Choose the cinema");
+            choice = user_scanner.nextInt();
+            user_scanner.nextLine();
+        }
+        choice--;
+                
+        int typeticket =-1;
+        while(typeticket != 1 && typeticket !=2){
+        
+            System.out.println("Adult or kids? \n1 Adult \n2 Kids");
+            typeticket = user_scanner.nextInt();
+            user_scanner.nextLine();
+        }   
+        double cost =0;
+        if (typeticket == 1) cost = tmp.get(choice).getFilm().getCostAdult();
+        if (typeticket == 2) cost = tmp.get(choice).getFilm().getCostKid();
+        Date dayTicket = null;
+        while(dayTicket == null){
+            System.out.println("Choose date");
+            System.out.println("Insert day: DD");
+            String day = user_scanner.nextLine();
+            System.out.println("Insert month: MM");
+            String month = user_scanner.nextLine();
+            System.out.println("Insert year: YYYY");
+            String year = user_scanner.nextLine();
+            String date_string = year+month+day;
+        //Instantiating the SimpleDateFormat class
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");      
+        //Parsing the given String to Date object
+            try {
+                dayTicket = formatter.parse(date_string);
+            } catch (ParseException e) {
+                System.out.println("Error date");
+                // e.printStackTrace();
+            }
+            if(tmp.get(choice).getFilm().getStartDate().compareTo(dayTicket) >0 || tmp.get(choice).getFilm().getEndDate().compareTo(dayTicket) < 0 ){
+                // se data scelta è maggiore della data finale o minore di quella iniziale, il film non è disponibile
+                dayTicket=null;
+                System.out.println("Film not available in that date");
+            }                    
+        }
+
+        System.out.println ("Do you want to buy a ticket?\n1 yes \n Another number no");
+        int buy = user_scanner.nextInt();
+        user_scanner.nextLine();
+
+        if(buy == 1 && tmp.get(choice).getFilm().sellTicket()) return new Ticket(typeticket, cost, tmp.get(choice).getBarcode(), tmp.get(choice).getCinema().getName(), tmp.get(choice).getFilm().getRoomView(), tmp.get(choice).getFilm().getTitle(), dayTicket);
+        else return null;
+    }
+
+    private void connect(){
+        System.out.println("Starting Client connection to "+address+":"+port);
+        try {
+            socket = new Socket(address,port);
+            System.out.println("Started Client connection to "+address+":"+port);
+            this.pw = new ObjectOutputStream(socket.getOutputStream());
+            this.serverStream = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void askList() {
+
+
+        try {
+            pw.writeObject("LIST");
+            String answer = (String) serverStream.readObject();
+            if(answer.equals("LIST OK")){
+                this.userList = (UserHash) serverStream.readObject();
+           } else quit(-1);
+                      
+            
+
+        } catch (IOException e) {
+            
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+           
+            e.printStackTrace();
+        }
+
+    }
+
+    private void quit(int i){
+        try {
+            pw.writeObject("EXIT");
+        } catch (IOException e) {
+        
+            e.printStackTrace();
+        }
+        try {
+            socket.close();
+        } catch (IOException e) {
+            
+            e.printStackTrace();
+        }
+
+        System.exit(i);
+    }
+
+
+   
+
+ 
+}// chiusura classe
