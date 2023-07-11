@@ -123,7 +123,7 @@ public class Client {
                 pw.writeObject(tmp);
                 
                 String answer = (String) serverStream.readObject();
-                if(!answer.equals("SUCCESS")) quit(-1);
+                if(!answer.equals("USERNAME ACCEPTED")) quit(-1);
                 System.out.println("Welcome " + tmp.getClass().getName() + " " + tmp.getName() + " " + tmp.getSurname());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
