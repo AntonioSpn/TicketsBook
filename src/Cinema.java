@@ -1,38 +1,79 @@
-public class Cinema{
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+
+public class Cinema implements Serializable{
+    private String name;
     private String city;
-    private int room; //numero sale del cinema
-    private Owner owner;
+    private int[] room; //numero sale del cinema
+    private ArrayList <Film> listFilm;
 
 
 
-    public Cinema(String city, int room, Owner owner) {
+    public Cinema(String name, String city, int[] room, ArrayList<Film> listFilm) {
+        this.name = name;
         this.city = city;
         this.room = room;
-        this.owner = owner;
+        this.listFilm = listFilm;
+    }
+
+    
+    public Cinema(String name, String city, int[] room) {
+        this.name = name;
+        this.city = city;
+        this.room = room;
+        this.listFilm = new ArrayList<>();
     }
 
 
+
+
+    public String getName() {
+        return this.name;
+    }
+
+    
 
     public String getCity() {
         return this.city;
     }
 
-    
-    public int getRoom() {
+
+    public int[] getRoom() {
         return this.room;
     }
 
-    public void setRoom(int room) {
-        this.room = room;
+    
+    public ArrayList<Film> getListFilm() {
+        return this.listFilm;
     }
 
-    public Owner getOwner() {
-        return this.owner;
+    public void addFilm(Film film){
+        listFilm.add(film);
     }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
+    public void removeFilm(int i){
+        listFilm.remove(i);
     }
+
+    public ArrayList <Film> viewToday (Date date){
+        ArrayList<Film> tmp = new ArrayList<>();
+
+        for (Film film : this.listFilm) {
+            if(film.getStartDate().compareTo(date) <1 && film.getEndDate().compareTo(date) > 0 ){ //
+                tmp.add(film);
+            }
+        }
+
+        return tmp;
+    }
+
+    
+
+
+
+
+
 
 
 
