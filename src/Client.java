@@ -11,7 +11,7 @@ import java.util.Scanner;
 import java.util.Map.Entry;
 
 public class Client {
-    private UserHash userList; //creazione arraylist
+    private UserHash userList; //creazione userList
     private final Scanner user_scanner = new Scanner(System.in);
     private String address;
     private int port;
@@ -56,7 +56,7 @@ public class Client {
                     // try {
                         User tmp = SignIn();
                         if(tmp == null) {
-                            System.out.println("Autenticazione fallita! Riprova\n");
+                            System.out.println("SIGN IN ERROR\n");
                             break;
                         }
                         switch (tmp.getClass().getName()){
@@ -98,7 +98,7 @@ public class Client {
         System.out.println("Insert Email: ");
         String email = user_scanner.nextLine();
         while(!email.contains("@")){
-            System.out.println("Something wrong with your Email, try again: ");
+            System.out.println("EMAIL ERROR");
             email = user_scanner.nextLine();
         }
         System.out.println("OK! Now choose you profile type:\n-Owner\n-Customer\n: ");
