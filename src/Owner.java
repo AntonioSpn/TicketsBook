@@ -1,6 +1,12 @@
-public class Owner extends User{
+public class Owner extends User {
     private String partitaIva;
     private Cinema cinema;
+
+    public Owner(String name, String surname, String username, String email, String password, String partitaIva) {
+        super(name, surname, username, email, password);
+        this.partitaIva = partitaIva;
+        this.cinema = null;
+    };
 
     public Owner(String name, String surname, String username, String email, String password, String partitaIva, Cinema cinema) {
         super(name, surname, username, email, password);
@@ -23,6 +29,10 @@ public class Owner extends User{
 
     public void setCinema(Cinema cinema) {
         this.cinema = cinema;
+    }
+
+    public boolean hasCinema(){
+        return this.cinema != null;
     }
 
 
