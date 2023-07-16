@@ -3,7 +3,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class UserHash implements Serializable{
+
+public class UserHash {
     private HashMap<String,User> userHashMap;
     private File file;
     
