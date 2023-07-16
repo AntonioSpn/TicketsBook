@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 
-public class SearchCinemaFilm {
+public class SearchCinemaFilm implements Serializable {
 
     private Cinema cinema;
     private Film film;
