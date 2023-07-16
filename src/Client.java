@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.Scanner;
-import java.util.Map.Entry;
 
 public class Client {
-    private UserHash userList; //creazione userList
+    // private UserHash userList; //creazione userList
     private final Scanner user_scanner = new Scanner(System.in);
     private String address;
     private int port;
@@ -30,9 +29,8 @@ public class Client {
 
         try {
             
-            user = new Client("127.0.0.1", 8888);
+            user = new Client("192.168.1.178", 8888);
             user.connect();
-            user.askList();
             user.Menu(); 
         } catch (Exception e) {            
             e.printStackTrace();
@@ -40,7 +38,7 @@ public class Client {
         }               
     }
 
-    private void Menu() throws IOException {
+    private void Menu() throws IOException, ClassNotFoundException {
         while(true){
             System.out.println("Welcome on TicketsBook platform!\nInsert 1 to Sign in or 2 to Sign up or 0 to leave the platform\nInsert choice: ");
             int choice = user_scanner.nextInt();
@@ -81,7 +79,7 @@ public class Client {
                     quit(1);   
             }
 
-            userList.saveOnFile();
+            // userList.saveOnFile();
         }
     }
 
@@ -135,7 +133,7 @@ public class Client {
             
     }
 
-    private void customerClient(Customer tmp) {
+    private void customerClient(Customer tmp) throws ClassNotFoundException, IOException {
         while(true){
             System.out.println("Hello Customer " + tmp.getName() + "\n");
             System.out.println("Choose your option: \n1: Search film and buy ticket\n2: View all your tickets \n0: Leave");
@@ -154,7 +152,6 @@ public class Client {
                     String search = user_scanner.nextLine();
 
                     Ticket t = searchTicket(search, ch);
-
                     if(t==null){ //non trova il cinema o il film
                         System.out.println("Impossible buy ticket");
                         break;
@@ -167,6 +164,12 @@ public class Client {
                     tmp.getTickets().forEach((ticket) -> System.out.println(ticket));
                     break;
                 case 0:
+                    try {
+                        pw.writeObject("UPDATE");
+                        pw.writeObject(tmp);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     return;
                 default:
                     System.out.println("Press 1, 2 or 0");
@@ -240,6 +243,13 @@ public class Client {
                     }
                     break;        
                 case 0:
+                    try {
+                        pw.writeObject("UPDATE");
+                        pw.writeObject(tmp);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    
                     return;
                 default: 
                     System.out.println("Press 1, 2, 3, 4, 5, 6 or 0");
@@ -424,38 +434,11 @@ public class Client {
 
     }
 
-    private Ticket searchTicket (String searchString, int type){
-        ArrayList <Cinema> cinemaList = new ArrayList<>();
-        for (Entry<String, User> entry : userList.entrySet()){ // per ogni entry presente in userList trasformato in un array di entry
-            if(entry.getValue().getClass().getName().equals("Owner")){ //il valore è User, mi prendo la classe e il nome della classe, se la classe è owner aggiungo
-                cinemaList.add(((Owner) entry.getValue()).getCinema()); //trasformo il valore in un owner e mi prendo il cinema, in quanto User non ha cinema ma owner si
-            }
-        };
-
-        ArrayList <SearchCinemaFilm> tmp = new ArrayList<>();
-
-        switch(type){
-            case 1: // ricerca per titolo del film    
-                for (Cinema cinema: cinemaList){
-                    for (Film f: cinema.getListFilm()){
-                        if(f.getTitle().toUpperCase().equals(searchString.toUpperCase()) && f.ticketAvailable()){
-                            tmp.add(new SearchCinemaFilm(cinema, f));
-                        }
-                    }
-                };  
-                break;             
-            case 2: // ricerca per nome del cinema
-                for (Cinema cinema: cinemaList){
-                    if(cinema.getName().toUpperCase().equals(searchString.toUpperCase())){
-                        for (Film f: cinema.getListFilm()){                    
-                            if(f.ticketAvailable()) tmp.add(new SearchCinemaFilm(cinema, f));
-                        }
-                    }
-                };
-                break;   
-            default:
-                break;    
-        }
+    private Ticket searchTicket (String searchString, int type) throws ClassNotFoundException, IOException{
+        pw.writeObject("SEARCH");
+        pw.writeObject(type);
+        pw.writeObject(searchString);
+        ArrayList <SearchCinemaFilm> tmp = (ArrayList <SearchCinemaFilm>) serverStream.readObject();       
         if (tmp.size() == 0) return null;
 
         int choice = -1;
@@ -508,7 +491,7 @@ public class Client {
         System.out.println ("Do you want to buy a ticket?\n1 yes \n Another number no");
         int buy = user_scanner.nextInt();
         user_scanner.nextLine();
-
+        // sellticket da passare su server TODO
         if(buy == 1 && tmp.get(choice).getFilm().sellTicket()) return new Ticket(typeticket, cost, tmp.get(choice).getBarcode(), tmp.get(choice).getCinema().getName(), tmp.get(choice).getFilm().getRoomView(), tmp.get(choice).getFilm().getTitle(), dayTicket);
         else return null;
     }
@@ -523,28 +506,6 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void askList() {
-
-
-        try {
-            pw.writeObject("LIST");
-            String answer = (String) serverStream.readObject();
-            if(answer.equals("LIST OK")){
-                this.userList = (UserHash) serverStream.readObject();
-           } else quit(-1);
-                      
-            
-
-        } catch (IOException e) {
-            
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-           
-            e.printStackTrace();
-        }
-
     }
 
     private void quit(int i){
