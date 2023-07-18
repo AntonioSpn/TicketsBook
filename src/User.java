@@ -53,6 +53,4 @@ public abstract class User implements Serializable {
             ", email='" + getEmail() + "'" +
             "}";
     }
-
-
 }

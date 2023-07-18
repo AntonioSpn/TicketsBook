@@ -6,7 +6,7 @@ public class Film implements Serializable{
     private String director; // regista
     private Date startDate; // data di uscita del film al cinema
     private Date endDate; 
-    private String gen; // genere del film
+    private String gen; 
     private double costAdult;
     private double costKid;
     private int roomView; // sala in cui è proiettato il fim

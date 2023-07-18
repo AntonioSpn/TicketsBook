@@ -43,7 +43,8 @@ public class UserHash {
         if(userHashMap.containsKey(user.getUsername()))return resultUsed;
         else{
         userHashMap.put(user.getUsername(),user);
-        return resultAccepted;}
+        return resultAccepted;
+        }
     }
 
     public User get(String key){

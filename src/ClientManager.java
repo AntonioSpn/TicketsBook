@@ -39,7 +39,7 @@ public class ClientManager implements Runnable {
                                 pw.writeObject(hash.put(customer));
                                 break;                                
                         }                       
-                       for (Entry<String, User> entry : hash.entrySet()){ // per ogni entry presente in userList trasformato in un array di entry
+                       for (Entry<String, User> entry : hash.entrySet()){ 
                             log(entry.getValue().toString());
                                
                         };
@@ -54,16 +54,16 @@ public class ClientManager implements Runnable {
                         if(hash.containsKey(username)){
                             User tmp = hash.get(username);
                             if(tmp.signIn(username,password)){
-                                pw.writeObject("SIGNIN OK"); //mando che il signin è ok
-                                pw.writeObject(tmp); //mando l'ìutente
+                                pw.writeObject("SIGNIN OK"); 
+                                pw.writeObject(tmp); 
                             } else pw.writeObject(("SIGNIN NOT OK"));                                                      
                         } else pw.writeObject("SIGNIN NOT OK");
                         break; 
                     case "SEARCH":
                         ArrayList <Cinema> cinemaList = new ArrayList<>();
-                        for (Entry<String, User> entry : hash.entrySet()){ // per ogni entry presente in userList trasformato in un array di entry
-                            if(entry.getValue().getClass().getName().equals("Owner") && ((Owner) entry.getValue()).hasCinema() ){ //il valore è User, mi prendo la classe e il nome della classe, se la classe è owner aggiungo
-                                cinemaList.add(((Owner) entry.getValue()).getCinema()); //trasformo il valore in un owner e mi prendo il cinema, in quanto User non ha cinema ma owner si
+                        for (Entry<String, User> entry : hash.entrySet()){ 
+                            if(entry.getValue().getClass().getName().equals("Owner") && ((Owner) entry.getValue()).hasCinema() ){ 
+                                cinemaList.add(((Owner) entry.getValue()).getCinema()); 
                             }
                         };
                         ArrayList <SearchCinemaFilm> tmp = new ArrayList<>();

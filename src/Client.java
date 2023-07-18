@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import java.util.Scanner;
 
 public class Client {
@@ -60,19 +59,14 @@ public class Client {
                             case "Customer":
                                 customerClient((Customer) tmp);
                                 break;
-                        }
-                    // }
-                    // catch (UnsupportedEncodingException | NoSuchAlgorithmException e ) {e.printStackTrace();}
-                    // catch (IOException e) {e.printStackTrace();}
-                    // catch (ClassNotFoundException e) {e.printStackTrace();}
+                        }                    
                     break;
                 case 2:
                     SignUp();
                     break;
                 case 0:                    
                     quit(1);   
-            }
-            // userList.saveOnFile();
+            }            
         }
     }
 
@@ -102,7 +96,7 @@ public class Client {
             case "OWNER":
                 System.out.println("Insert partita IVA:");
                 String piva = user_scanner.nextLine();
-                tmp = new Owner(name, surname, user, email, pass, piva); // aggiungere costruttore senza cinema in owner
+                tmp = new Owner(name, surname, user, email, pass, piva); 
                 break;
             case "CUSTOMER":
                 tmp = new Customer(name,surname,user,email,pass);
@@ -130,12 +124,9 @@ public class Client {
             System.out.println("Hello Customer " + tmp.getName() + "\n");
             System.out.println("Choose your option: \n1 Search film and buy ticket\n2 View all your tickets \n0 Leave");
             int choice = user_scanner.nextInt();
-            user_scanner.nextLine();
-            //Ticket t = new Ticket(1, 9.00, "CIN1000001");
-            //ArrayList <Ticket> tickets = new ArrayList<>();
+            user_scanner.nextLine();            
             switch (choice){            
-                case 1:
-                    //tmp.buyTicket(t); // t non è inizializzato, sistemare
+                case 1:                    
                     System.out.println ("Search for title or cinema");
                     System.out.println ("1 Search by film \n2 Search by cinema");
                     int ch = user_scanner.nextInt();
@@ -149,7 +140,6 @@ public class Client {
                     }
                     tmp.buyTicket(t); // t non è inizializzato, sistemare
                     System.out.println("Ticket has been bought");
-
                     break;
                 case 2:
                     tmp.getTickets().forEach((ticket) -> System.out.println(ticket));
@@ -471,7 +461,7 @@ public class Client {
         System.out.println ("Do you want to buy a ticket?\n1 yes \nAnother number no");
         int buy = user_scanner.nextInt();
         user_scanner.nextLine();
-        if (buy!=1) { // buy!=1 vuol dire che l'utente non vuole comprare
+        if (buy!=1) { 
             System.out.println("You don't want to buy the ticket");
             pw.writeObject(Integer.valueOf(-1));
             return null;

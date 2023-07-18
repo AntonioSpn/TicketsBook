@@ -34,7 +34,7 @@ public class Server {
                 client_socket = socket.accept();
                 System.out.println("Accepted connection from " + client_socket.getRemoteSocketAddress());
                 ClientManager cm = new ClientManager(client_socket,hash);
-                Thread t = new Thread(cm,"client_"+client_id); // primo parametro funzione che esegue, secondo nome del thread
+                Thread t = new Thread(cm,"client_"+client_id); 
                 client_id++;
                 t.start();
             }

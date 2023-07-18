@@ -5,7 +5,7 @@ import java.util.Date;
 public class Cinema implements Serializable{
     private String name;
     private String city;
-    private int[] room; //numero sale del cinema
+    private int[] room; //array di sale del cinema
     private ArrayList <Film> listFilm;
     private int progressive;
 
@@ -61,5 +61,4 @@ public class Cinema implements Serializable{
     public synchronized String getBarcode(){
         return this.getName() + progressive++;
     }  
-
 }
