@@ -12,7 +12,7 @@ public class Server {
 
     public static void main(String args[]){        
         try {
-            Server server = new Server(8888);
+            Server server = new Server(7001);
             server.start();
         } catch (IOException e) { e.printStackTrace(); }
         catch (ClassNotFoundException e) { e.printStackTrace(); }        

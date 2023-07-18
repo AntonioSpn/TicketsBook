@@ -121,7 +121,7 @@ public class Film implements Serializable{
             "}";
     }
 
-    public boolean sellTicket(){
+    public synchronized boolean sellTicket(){
         if(this.ticketAvailable()){
             this.numberTicketSold++;
             return true;

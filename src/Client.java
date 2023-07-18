@@ -26,7 +26,7 @@ public class Client {
     public static void main(String[] args) {
         Client user = null;
         try {            
-            user = new Client("127.0.0.1", 8888);
+            user = new Client("iridium.diit.unict.it", 7001);
             user.connect();
             user.Menu(); 
         } catch (Exception e) {            
