@@ -146,6 +146,7 @@ public class Client {
                         break;
                     }
                     tmp.buyTicket(t); // t non è inizializzato, sistemare
+                    System.out.println("Ticket has been bought");
 
                     break;
                 case 2:
@@ -464,14 +465,10 @@ public class Client {
         int buy = user_scanner.nextInt();
         user_scanner.nextLine();
         if (buy!=1) { // buy!=1 vuol dire che l'utente non vuole comprare
-        // choice <0 non è un valore opportuno
-            System.out.println("You don't want to buy the ticket or you have inserted a not valid index");
+            System.out.println("You don't want to buy the ticket");
             pw.writeObject(Integer.valueOf(-1));
             return null;
         }
-        // sellticket da passare su server TODO
-        /*if(buy == 1 && tmp.get(choice).getFilm().sellTicket()) return new Ticket(typeticket, cost, tmp.get(choice).getBarcode(), tmp.get(choice).getCinema().getName(), tmp.get(choice).getFilm().getRoomView(), tmp.get(choice).getFilm().getTitle(), dayTicket);
-        else return null;*/
         pw.writeObject(Integer.valueOf(choice));
         boolean sell = (Boolean)serverStream.readObject();
         String barcode = (String) serverStream.readObject();
