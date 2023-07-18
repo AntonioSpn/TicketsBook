@@ -266,7 +266,7 @@ public class Client {
         String title = user_scanner.nextLine();
         System.out.println("Insert director");
         String director = user_scanner.nextLine();
-        System.out.println("Insert film genre"); // tradurre genere
+        System.out.println("Insert film genre"); 
         String gen = user_scanner.nextLine();
         System.out.println("Insert full cost of the ticket");
         double costAdult= user_scanner.nextDouble();
