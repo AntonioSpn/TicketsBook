@@ -6,27 +6,22 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 
 public class ClientManager implements Runnable {
-
     private Socket clientSocket;
     private UserHash hash;
-
 
     public ClientManager(Socket clientSocket, UserHash hash) {
         this.clientSocket = clientSocket;
         this.hash = hash;
     }
 
-
     @Override
     public void run() {
         String s = "Accepted connction from " + clientSocket.getRemoteSocketAddress();
         log(s);   
-
         try {           
             ObjectInputStream clientScanner = new ObjectInputStream(clientSocket.getInputStream());
             ObjectOutputStream pw = new ObjectOutputStream(clientSocket.getOutputStream());
-            String cmd = null;
-            
+            String cmd = null;            
             boolean exit = false;
             while (!exit){
                 cmd = (String) clientScanner.readObject();
@@ -46,19 +41,14 @@ public class ClientManager implements Runnable {
                             case "Customer":
                                 Customer customer= (Customer) clientScanner.readObject();
                                 pw.writeObject(hash.put(customer));
-                                break;
-
-                                
-                        }
-
-                       
+                                break;                                
+                        }                       
                         System.out.println(hash.toString());
                         break;
                     case "UPDATE":
                         User user = (User) clientScanner.readObject();
                         hash.update(user);                       
                         break;
-
                     case "SIGNIN":
                         String username = (String) clientScanner.readObject();
                         String password = (String) clientScanner.readObject();
@@ -78,10 +68,8 @@ public class ClientManager implements Runnable {
                             }
                         };
                         ArrayList <SearchCinemaFilm> tmp = new ArrayList<>();
-
-                        int type = (int) clientScanner.readObject();
+                        int type = (Integer)clientScanner.readObject();
                         String searchString = (String) clientScanner.readObject();
-
                         switch(type){
                             case 1: // ricerca per titolo del film    
                                 for (Cinema cinema: cinemaList){
@@ -104,10 +92,13 @@ public class ClientManager implements Runnable {
                             default:
                                 break;    
                         }
-
                         pw.writeObject(tmp);
+                        int choice = (Integer)clientScanner.readObject();   
+                        if(choice >=0 && choice < tmp.size()){
+                            boolean sell = tmp.get(choice).getFilm().sellTicket();
+                            pw.writeObject(Boolean.valueOf(sell));                          
+                        }                                             
                         break;
-
                     case "EXIT":
                     default: 
                         log("Closing connection to "+clientSocket.getRemoteSocketAddress());
@@ -116,26 +107,15 @@ public class ClientManager implements Runnable {
                         exit = true;
                 }
                  hash.saveOnFile();
-            }
-            
+            }            
         } catch (IOException e) {
                 e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            
+        } catch (ClassNotFoundException e) {            
             e.printStackTrace();
-        }
-
-   
-        
+        }         
     }
 
     private void log(String msg){
         System.out.println(Thread.currentThread().getName() + ": "+ msg);
-    }
-
-    
-
-
-
-
+    }  
 }
