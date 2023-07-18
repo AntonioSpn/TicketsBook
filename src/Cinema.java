@@ -7,12 +7,14 @@ public class Cinema implements Serializable{
     private String city;
     private int[] room; //numero sale del cinema
     private ArrayList <Film> listFilm;
+    private int progressive;
 
     public Cinema(String name, String city, int[] room, ArrayList<Film> listFilm) {
         this.name = name;
         this.city = city;
         this.room = room;
         this.listFilm = listFilm;
+        this.progressive = 0;
     }
     
     public Cinema(String name, String city, int[] room) {
@@ -55,4 +57,9 @@ public class Cinema implements Serializable{
         }
         return tmp;
     }
+
+    public synchronized String getBarcode(){
+        return this.getName() + progressive++;
+    }  
+
 }

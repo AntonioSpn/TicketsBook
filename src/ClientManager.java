@@ -96,7 +96,8 @@ public class ClientManager implements Runnable {
                         int choice = (Integer)clientScanner.readObject();   
                         if(choice >=0 && choice < tmp.size()){
                             boolean sell = tmp.get(choice).getFilm().sellTicket();
-                            pw.writeObject(Boolean.valueOf(sell));                          
+                            pw.writeObject(Boolean.valueOf(sell));  
+                            pw.writeObject(tmp.get(choice).getCinema().getBarcode());                        
                         }                                             
                         break;
                     case "EXIT":

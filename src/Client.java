@@ -472,7 +472,8 @@ public class Client {
         else return null;*/
         pw.writeObject(Integer.valueOf(choice));
         boolean sell = (Boolean)serverStream.readObject();
-        if(buy == 1 && sell) return new Ticket(typeticket, cost, tmp.get(choice).getBarcode(), tmp.get(choice).getCinema().getName(), tmp.get(choice).getFilm().getRoomView(), tmp.get(choice).getFilm().getTitle(), dayTicket);
+        String barcode = (String) serverStream.readObject();
+        if(buy == 1 && sell) return new Ticket(typeticket, cost, barcode, tmp.get(choice).getCinema().getName(), tmp.get(choice).getFilm().getRoomView(), tmp.get(choice).getFilm().getTitle(), dayTicket);
         else return null;
     }
 

@@ -26,8 +26,5 @@ public class SearchCinemaFilm implements Serializable {
     public Film getFilm() {
         return this.film;
     }
-
-    public String getBarcode(){
-        return "barcode";
-    }  
+    
 }
