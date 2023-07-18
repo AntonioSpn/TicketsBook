@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-public class Client {
-    // private UserHash userList; //creazione userList
+public class Client {    
     private final Scanner user_scanner = new Scanner(System.in);
     private String address;
     private int port;
