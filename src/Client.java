@@ -80,7 +80,7 @@ public class Client {
         User tmp = null;
         System.out.println("Insert username");
         String user=user_scanner.nextLine();
-        System.out.println("Perfect! now choose a password");
+        System.out.println("Insert password");
         String pass = user_scanner.nextLine();
         System.out.println("Insert Name");
         String name = user_scanner.nextLine();
@@ -194,12 +194,14 @@ public class Client {
                     break;
                 case 3:
                     if(tmp.hasCinema()){
-                        this.changeCost(tmp.getCinema()); 
+                        this.changeCost(tmp.getCinema());
+                        System.out.println("Cost has been changed"); 
                     }   
                     break;                
                 case 4:
                     if(tmp.hasCinema()){
                         this.setNumberTicketsMax(tmp.getCinema());
+                        System.out.println("Number of tickets has been changed");
                     }                                        
                     break;
                 case 5:
