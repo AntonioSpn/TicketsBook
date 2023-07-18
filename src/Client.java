@@ -405,7 +405,10 @@ public class Client {
         pw.writeObject(Integer.valueOf(type));
         pw.writeObject(searchString);
         ArrayList <SearchCinemaFilm> tmp = (ArrayList <SearchCinemaFilm>) serverStream.readObject();       
-        if (tmp.size() == 0) return null;
+        if (tmp.size() == 0) { 
+            pw.writeObject(Integer.valueOf(-1));
+            return null;
+        }
         int choice = -1;
         while ( choice < 0 || choice > tmp.size()){
             for(int i = 0; i< tmp.size(); i++){                             
