@@ -14,9 +14,6 @@ public class Film implements Serializable{
     private int numberTicketMax; //numero di biglietti massimi
     private String timeBeginning; // ora di inizio
 
-
-
-
     public Film(String title, String director, Date startDate, Date endDate, String gen, double costAdult, double costKid, int roomView, int numberTicketSold, int numberTicketMax, String timeBeginning) {
         this.title = title;
         this.director = director;
@@ -31,18 +28,13 @@ public class Film implements Serializable{
         this.timeBeginning = timeBeginning;
     }
 
-
-
-
     public String getTitle() {
         return this.title;
     }
 
     public String getDirector() {
         return this.director;
-    }
-
-    
+    }    
 
     public Date getStartDate() {
         return this.startDate;
@@ -62,9 +54,7 @@ public class Film implements Serializable{
 
     public String getGen() {
         return this.gen;
-    }
-
-    
+    }    
 
     public double getCostAdult() {
         return this.costAdult;
@@ -114,8 +104,6 @@ public class Film implements Serializable{
         return this.numberTicketMax > this.numberTicketSold;
     }
 
-
-
     @Override
     public String toString() {
         return "{" +
@@ -133,13 +121,10 @@ public class Film implements Serializable{
             "}";
     }
 
-
     public boolean sellTicket(){
         if(this.ticketAvailable()){
             this.numberTicketSold++;
             return true;
         } else return false;
-    }
-
-
+    }    
 }

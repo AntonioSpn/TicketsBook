@@ -10,9 +10,7 @@ public class Server {
     int client_id = 0;
     private UserHash hash;
 
-
-    public static void main(String args[]){
-        
+    public static void main(String args[]){        
         try {
             Server server = new Server(8888);
             server.start();
@@ -31,22 +29,18 @@ public class Server {
             System.out.println("Starting server on port "+port);
             socket = new ServerSocket(port);
             System.out.println("Started server on port "+port);
-
             while (true) {
                 System.out.println("Listening on port " + port);
                 client_socket = socket.accept();
                 System.out.println("Accepted connection from " + client_socket.getRemoteSocketAddress());
-
                 ClientManager cm = new ClientManager(client_socket,hash);
                 Thread t = new Thread(cm,"client_"+client_id); // primo parametro funzione che esegue, secondo nome del thread
                 client_id++;
                 t.start();
             }
-
         } catch (IOException e) {
             System.out.println("Could not start server on port "+port);
             e.printStackTrace();
         }
-
     }
 }

@@ -22,7 +22,6 @@ public class Owner extends User {
         this.partitaIva = partitaIva;
     }
 
-
     public Cinema getCinema() {
         return this.cinema;
     }
@@ -33,7 +32,5 @@ public class Owner extends User {
 
     public boolean hasCinema(){
         return this.cinema != null;
-    }
-
-
+    }    
 }

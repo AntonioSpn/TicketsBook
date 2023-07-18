@@ -3,7 +3,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-
 public class UserHash {
     private HashMap<String,User> userHashMap;
     private File file;
@@ -49,8 +48,7 @@ public class UserHash {
 
     public User get(String key){
         return userHashMap.get(key);
-    }
-    
+    }    
     
     public Set<Map.Entry<String, User>> entrySet(){
         return userHashMap.entrySet();
@@ -64,5 +62,4 @@ public class UserHash {
     public synchronized boolean containsKey(String key){
         return userHashMap.containsKey(key);
     }
-
 }
