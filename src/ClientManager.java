@@ -106,6 +106,7 @@ public class ClientManager implements Runnable {
                         hash.saveOnFile();
                         exit = true;
                 }
+                pw.flush();
                  hash.saveOnFile();
             }            
         } catch (IOException e) {

@@ -162,10 +162,11 @@ public class Client {
                 default:
                     System.out.println("Press 1, 2 or 0");
             }
+            pw.flush();
         }
      }
 
-    private void ownerClient(Owner tmp) {
+    private void ownerClient(Owner tmp) throws IOException {
         while (true){
             System.out.println("Hello Mr." + tmp.getName() + "\n");
             System.out.println("Choose your option");
@@ -227,17 +228,14 @@ public class Client {
                         );
                     }
                     break;        
-                case 0:
-                    try {
-                        pw.writeObject("UPDATE");
-                        pw.writeObject(tmp);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }                    
+                case 0:                    
+                    pw.writeObject("UPDATE");
+                    pw.writeObject(tmp);                    
                     return;
                 default: 
                     System.out.println("Press 1, 2, 3, 4, 5, 6 or 0");
             }
+            pw.flush();
         }
     }
 
