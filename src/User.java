@@ -43,4 +43,16 @@ public abstract class User implements Serializable {
         if(this.password.equals(password) && this.username.equals(username)) return true;
         else return false;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+            " name='" + getName() + "'" +
+            ", surname='" + getSurname() + "'" +
+            ", username='" + getUsername() + "'" +
+            ", email='" + getEmail() + "'" +
+            "}";
+    }
+
+
 }

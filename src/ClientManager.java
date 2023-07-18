@@ -39,7 +39,10 @@ public class ClientManager implements Runnable {
                                 pw.writeObject(hash.put(customer));
                                 break;                                
                         }                       
-                        log(hash.toString());
+                       for (Entry<String, User> entry : hash.entrySet()){ // per ogni entry presente in userList trasformato in un array di entry
+                            log(entry.getValue().toString());
+                               
+                        };
                         break;
                     case "UPDATE":
                         User user = (User) clientScanner.readObject();

@@ -111,10 +111,12 @@ public class Client {
             try {
                 pw.writeObject("SIGNUP");
                 pw.writeObject((tmp.getClass().getName()));
-                pw.writeObject(tmp);
-                
+                pw.writeObject(tmp);                
                 String answer = (String) serverStream.readObject();
-                if(!answer.equals("USERNAME ACCEPTED")) quit(-1);
+                if(!answer.equals("USERNAME ACCEPTED")) {
+                    System.out.println("This username is used");
+                    return;
+                }
                 System.out.println("Welcome " + tmp.getClass().getName() + " " + tmp.getName() + " " + tmp.getSurname());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
