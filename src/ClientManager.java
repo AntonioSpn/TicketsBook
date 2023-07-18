@@ -27,10 +27,6 @@ public class ClientManager implements Runnable {
                 cmd = (String) clientScanner.readObject();
                 log(cmd);
                 switch (cmd){
-                    case "LIST":
-                        pw.writeObject("LIST OK");
-                        pw.writeObject(hash);
-                        break;
                     case "SIGNUP":
                         cmd = (String) clientScanner.readObject();
                         switch (cmd){

@@ -347,11 +347,11 @@ public class Client {
     }    
     private int selectFilm(Cinema cinema){
         int film = -1;
-        while ( film < 1 || film > cinema.getListFilm().size()){
+        while ( film < 0 || film > cinema.getListFilm().size()){
             for(int i = 0; i< cinema.getListFilm().size(); i++){
                 System.out.println((i+1) + ": "+cinema.getListFilm().get(i).getTitle());
             }
-            System.out.println ("Choice index");
+            System.out.println ("Choice index or 0 to exit");
             film = user_scanner.nextInt();
             user_scanner.nextLine();
         };
@@ -360,13 +360,14 @@ public class Client {
     
     private void removeFilm (Cinema cinema){
         System.out.println("Choose the index at which remove the film");
-        cinema.removeFilm(this.selectFilm(cinema));
+        int a = this.selectFilm(cinema);
+        if (a>=0) cinema.removeFilm(a);        
     }
 
     private void changeCost (Cinema cinema){
         System.out.println("Choose the index at which edit the cost of the film");
         int film = this.selectFilm(cinema);
-        while (true){
+        while (true && film!=-1){
             System.out.println("Do you want to edit full price or reduce price?");
             System.out.println("1 Full price \n2 Reduced price");
             int choice = user_scanner.nextInt();
@@ -392,6 +393,7 @@ public class Client {
     private void setNumberTicketsMax(Cinema cinema){
         System.out.println("Choose the index at which edit the number of tickets available for a film");
         int film = this.selectFilm(cinema);
+        if (film <0) return;
         int max = cinema.getRoom()[cinema.getListFilm().get(film).getRoomView()-1];
         int min = cinema.getListFilm().get(film).getNumberTicketSold();       
         int newseat = -1;
