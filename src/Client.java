@@ -196,13 +196,13 @@ public class Client {
                 case 3:
                     if(tmp.hasCinema()){
                         this.changeCost(tmp.getCinema());
-                        System.out.println("Cost has been changed"); 
+                        //System.out.println("Cost has been changed"); 
                     }   
                     break;                
                 case 4:
                     if(tmp.hasCinema()){
                         this.setNumberTicketsMax(tmp.getCinema());
-                        System.out.println("Number of tickets has been changed");
+                        //System.out.println("Number of tickets has been changed");
                     }                                        
                     break;
                 case 5:
@@ -378,12 +378,14 @@ public class Client {
                     double newprice = user_scanner.nextDouble();
                     user_scanner.nextLine();
                     cinema.getListFilm().get(film).setCostAdult(newprice);
+                    System.out.println("Cost has been changed");
                     return;
                 case 2:
                     System.out.println("New price");
                     double newpricekid = user_scanner.nextDouble();
                     user_scanner.nextLine();
                     cinema.getListFilm().get(film).setCostKid(newpricekid);
+                    System.out.println("Cost has been changed");
                     return; 
                 default:
             }
@@ -403,6 +405,7 @@ public class Client {
             user_scanner.nextLine();
         }
         cinema.getListFilm().get(film).setNumberTicketMax(newseat);
+        System.out.println("Number of tickets has been changed");
     }
 
     private Ticket searchTicket (String searchString, int type) throws ClassNotFoundException, IOException{

@@ -39,7 +39,7 @@ public class ClientManager implements Runnable {
                                 pw.writeObject(hash.put(customer));
                                 break;                                
                         }                       
-                        System.out.println(hash.toString());
+                        log(hash.toString());
                         break;
                     case "UPDATE":
                         User user = (User) clientScanner.readObject();
