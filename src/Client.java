@@ -92,10 +92,10 @@ public class Client {
             System.out.println("EMAIL ERROR");
             email = user_scanner.nextLine();
         }
-        System.out.println("OK! Now choose you profile type\n-Owner\n-Customer");
+        System.out.println("Choose your profile type\n-Owner\n-Customer");
         String type = user_scanner.nextLine().toUpperCase();
         while(!type.equals("OWNER") && !type.equals("CUSTOMER")){
-            System.out.println("Error!Choose you profile type\n-Owner\n-Customer");
+            System.out.println("Error!Choose your profile type\n-Owner\n-Customer");
             type = user_scanner.nextLine().toUpperCase();
         }
         switch (type){
