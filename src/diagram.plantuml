@@ -1,0 +1,162 @@
+@startuml diagramma
+abstract class User implements Serializable{
+    -String name
+    -String surname
+    -String username
+    -String email
+    -String password
+    +String getName()
+    +String getSurname()     
+    +String getUsername()   
+    +String getEmail() 
+    +void setEmail(String email) 
+    +void setPassword(String password) 
+    +boolean signIn (String username, String password)
+    +String toString() 
+}
+
+class Customer extends User{
+    -ArrayList<Ticket> tickets   
+    +void buyTicket (Ticket ticket)
+    +ArrayList<Ticket> getTickets()   
+}
+
+class Owner extends User{
+    -String partitaIva
+    -Cinema cinema
+    +String getPartitaIva()
+    +void setPartitaIva(String partitaIva)
+    +Cinema getCinema()
+    +void setCinema(Cinema cinema)
+    +boolean hasCinema()
+}
+
+class Film implements Serializable{
+    -String title
+    -String director 
+    -Date startDate 
+    -Date endDate 
+    -String gen 
+    -double costAdult
+    -double costKid
+    -int roomView 
+    -int numberTicketSold  
+    -int numberTicketMax  
+    -String timeBeginning  
+    +String getTitle() 
+    +String getDirector()
+    +Date getStartDate()
+    +void setStartDate(Date startDate) 
+    +Date getEndDate() 
+    +void setEndDate(Date endDate) 
+    +String getGen() 
+    +double getCostAdult()
+    +void setCostAdult(double costAdult)
+    +double getCostKid()       
+    +void setCostKid(double costKid)
+    +int getRoomView()
+    +void setRoomView(int roomView) 
+    +int getNumberTicketSold() 
+    +void setNumberTicketSold(int numberTicketSold) 
+    +int getNumberTicketMax() 
+    +void setNumberTicketMax(int numberTicketMax) 
+    +String getTimeBeginning()
+    +boolean ticketAvailable()    
+    +String toString() 
+    +synchronized boolean sellTicket()  
+}
+
+class Cinema implements Serializable{
+    -String name
+    -String city
+    -int[] room 
+    -ArrayList <Film> listFilm
+    -int progressive
+    +String getName()
+    +String getCity()
+    +int[] getRoom()
+    +ArrayList<Film> getListFilm() 
+    +void addFilm(Film film)
+    +void removeFilm(int i)
+    +ArrayList <Film> viewToday (Date date)
+    +synchronized String getBarcode()
+}
+
+class Ticket implements Serializable{
+    -int type 
+    -double cost
+    -String barcode
+    -String nameCinema
+    -int room 
+    -String nameFilm
+    -Date date    
+    +String getBarcode() 
+    +String getNameCinema() 
+    +int getRoom() 
+    +String getNameFilm() 
+    +Date getDate() 
+    +int getType() 
+    +void setType(int type)
+    +double getCost() 
+    +void setCost(double cost) 
+    +String toString() 
+}
+
+class SearchCinemaFilm implements Serializable{
+    -Cinema cinema
+    -Film film
+    +String toString()
+    +Cinema getCinema() 
+    +Film getFilm()        
+}
+
+class UserHash {
+    -HashMap<String, User> userHashMap
+    -File file
+    +synchronized void saveOnFile() 
+    -synchronized HashMap<String,User> loadFromFile() 
+    +synchronized String put (User user)
+    +public User get(String key)
+    +Set<Map.Entry<String, User>> entrySet()
+    +public synchronized void update(User tmp)
+    +public synchronized boolean containsKey(String key)
+}
+class Client{
+    -final Scanner user_scanner
+    -String address
+    -int port
+    -ObjectOutputStream pw
+    -ObjectInputStream serverStream
+    -Socket socket
+    +static void main(String[] args)
+    -void Menu()
+    -void SignUp()
+    -void customerClient(Customer tmp)
+    -void ownerClient(Owner tmp)
+    -User SignIn()
+    -void addFilm(Cinema cinema)
+    -void addCinema(Owner tmp)
+    -int selectFilm(Cinema cinema)
+    -void removeFilm(Cinema cinema)
+    -void changeCost(Cinema cinema)
+    -void setNumberTicketsMax(Cinema cinema)
+    -Ticket searchTicket(String searchString, int type)
+    -void connect()
+    -void quit(int i)
+}
+class Server{
+    -ServerSocket socket
+    -Socket client_socket
+    -int port
+    int client_id
+    -UserHash hash
+    +static void main(String[] args)
+    +void start()
+}
+class ClientManager implements Runnable{
+    -Socket clientSocket
+    -UserHash hash
+    +void run()
+    -void log(String msg)
+}
+@enduml
