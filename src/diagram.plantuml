@@ -1,4 +1,4 @@
-@startuml diagramma
+@startuml diagram
 abstract class User implements Serializable{
     -String name
     -String surname
