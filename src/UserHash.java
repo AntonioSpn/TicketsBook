@@ -28,6 +28,7 @@ public class UserHash {
         os.close();
     }
 
+    @SuppressWarnings("unchecked")
     private synchronized HashMap<String,User> loadFromFile() throws IOException, ClassNotFoundException {
         HashMap<String,User> userHM = new HashMap<>();
         FileInputStream fileStream = new FileInputStream(file);

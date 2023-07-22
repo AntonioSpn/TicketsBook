@@ -399,6 +399,7 @@ public class Client {
         System.out.println("Number of tickets has been changed");
     }
 
+    @SuppressWarnings("unchecked")
     private Ticket searchTicket (String searchString, int type) throws ClassNotFoundException, IOException{
         pw.writeObject("SEARCH");
         pw.writeObject(Integer.valueOf(type));
