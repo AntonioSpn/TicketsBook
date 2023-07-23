@@ -16,7 +16,7 @@ public class Client {
     private ObjectInputStream serverStream;
     private Socket socket;
 
-    public Client (String address, int port) throws ClassNotFoundException, IOException{
+    public Client (String address, int port) {
         this.address = address;
         this.port = port;
     }    
