@@ -125,11 +125,14 @@ public class Client {
             int choice = user_scanner.nextInt();
             user_scanner.nextLine();            
             switch (choice){            
-                case 1:                    
-                    System.out.println ("Search for title or cinema");
-                    System.out.println ("1 Search by film \n2 Search by cinema");
-                    int ch = user_scanner.nextInt();
-                    user_scanner.nextLine();
+                case 1:   
+                    int ch = -1;
+                    while (ch !=1 && ch!=2){                 
+                        System.out.println ("Search for title or cinema");
+                        System.out.println ("1 Search by film \n2 Search by cinema");
+                        ch = user_scanner.nextInt();
+                        user_scanner.nextLine();
+                    }
                     System.out.println("Insert title or name of the cinema");
                     String search = user_scanner.nextLine();
                     Ticket t = searchTicket(search, ch);
