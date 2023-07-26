@@ -63,7 +63,8 @@ class Film implements Serializable{
     +String getTimeBeginning()
     +boolean ticketAvailable()    
     +String toString() 
-    +synchronized boolean sellTicket()  
+    +synchronized boolean sellTicket()
+    +Film clone()
 }
 
 class Cinema implements Serializable{
@@ -80,6 +81,7 @@ class Cinema implements Serializable{
     +void removeFilm(int i)
     +ArrayList <Film> viewToday (Date date)
     +synchronized String getBarcode()
+    +Cinema clone()
 }
 
 class Ticket implements Serializable{
@@ -107,7 +109,8 @@ class SearchCinemaFilm implements Serializable{
     -Film film
     +String toString()
     +Cinema getCinema() 
-    +Film getFilm()        
+    +Film getFilm()
+    +SearchCinemaFilm clone()      
 }
 
 class UserHash {
