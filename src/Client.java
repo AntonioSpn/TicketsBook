@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -476,29 +477,23 @@ public class Client {
         else return null;
     }
 
-    private void connect(){
-        System.out.println("Starting Client connection to "+address+":"+port);
-        try {
-            socket = new Socket(address,port);
-            System.out.println("Started Client connection to "+address+":"+port);
-            this.pw = new ObjectOutputStream(socket.getOutputStream());
-            this.serverStream = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void connect() throws UnknownHostException, IOException{
+        System.out.println("Starting Client connection to "+address+":"+port);        
+        socket = new Socket(address,port);
+        System.out.println("Started Client connection to "+address+":"+port);
+        this.pw = new ObjectOutputStream(socket.getOutputStream());
+        this.serverStream = new ObjectInputStream(socket.getInputStream());             
     }
 
     private void quit(int i){
         try {
             pw.writeObject("EXIT");
-        } catch (IOException e) {
-        
+        } catch (IOException e) {        
             e.printStackTrace();
         }
         try {
             socket.close();
-        } catch (IOException e) {
-            
+        } catch (IOException e) {            
             e.printStackTrace();
         }
         System.exit(i);

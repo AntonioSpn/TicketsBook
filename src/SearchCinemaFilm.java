@@ -27,4 +27,7 @@ public class SearchCinemaFilm implements Serializable {
         return this.film;
     }
     
+    public SearchCinemaFilm clone() {
+        return new SearchCinemaFilm(this.cinema.clone(), this.film.clone());
+    }
 }

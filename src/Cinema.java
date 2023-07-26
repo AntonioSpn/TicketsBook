@@ -60,5 +60,13 @@ public class Cinema implements Serializable{
 
     public synchronized String getBarcode(){
         return this.getName() + progressive++;
-    }  
+    }
+
+    public Cinema clone(){
+        ArrayList <Film> tmp = new ArrayList<>();
+        for(Film f : this.listFilm){
+            tmp.add(f.clone());
+        }
+        return new Cinema(this.name, this.city, this.room, tmp);
+    }
 }

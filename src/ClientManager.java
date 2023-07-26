@@ -40,9 +40,8 @@ public class ClientManager implements Runnable {
                                 break;                                
                         }                       
                        for (Entry<String, User> entry : hash.entrySet()){ 
-                            log(entry.getValue().toString());
-                               
-                        };
+                            log(entry.getValue().toString());                               
+                        }
                         break;
                     case "UPDATE":
                         User user = (User) clientScanner.readObject();
@@ -65,7 +64,7 @@ public class ClientManager implements Runnable {
                             if(entry.getValue().getClass().getName().equals("Owner") && ((Owner) entry.getValue()).hasCinema() ){ 
                                 cinemaList.add(((Owner) entry.getValue()).getCinema()); 
                             }
-                        };
+                        }
                         ArrayList <SearchCinemaFilm> tmp = new ArrayList<>();
                         int type = (Integer)clientScanner.readObject();
                         String searchString = (String) clientScanner.readObject();
@@ -91,7 +90,11 @@ public class ClientManager implements Runnable {
                             default:
                                 break;    
                         }
-                        pw.writeObject(tmp);
+                        ArrayList <SearchCinemaFilm> clone = new ArrayList<>();
+                        for(SearchCinemaFilm cf : tmp){
+                            clone.add(cf.clone());
+                        }
+                        pw.writeObject(clone);
                         int choice = (Integer)clientScanner.readObject();   
                         if(choice >=0 && choice < tmp.size()){
                             boolean sell = tmp.get(choice).getFilm().sellTicket();

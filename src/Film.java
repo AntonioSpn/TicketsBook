@@ -127,4 +127,8 @@ public class Film implements Serializable{
             return true;
         } else return false;
     }    
+
+    public Film clone(){
+        return new Film(this.title, this.director, this.startDate, this.endDate, this.gen, this.costAdult, this.costKid, this.roomView, this.numberTicketSold, this.numberTicketMax, this.timeBeginning);
+    }
 }
